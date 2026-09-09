@@ -55,7 +55,7 @@ export async function POST(request: Request) {
         const token = jwt.sign(
             {
                 id: user._id.toString(),
-                name: user.name,
+                name: user.nama,
                 email: user.email,
                 role: user.role,
             },
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
             message: "Login berhasil",
             user: {
                 id: user._id,
-                name: user.name,
+                name: user.nama,
                 email: user.email,
                 role: user.role,
             },
