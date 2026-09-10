@@ -11,12 +11,29 @@ export default function NewTeacherPage() {
   const [subject, setSubject] = useState("");
   const [classes, setClasses] = useState("");
   const [showNotification, setShowNotification] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (name.trim() && subject.trim() && classes.trim()) {
+    setError("");
+
+    try {
+      const response = await fetch("/api/teachers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, subject, classes }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message ?? "Gagal menyimpan guru");
+        return;
+      }
+
       setShowNotification(true);
       setTimeout(() => router.push("/admin/teachers"), 1500);
+    } catch {
+      setError("Server tidak dapat dihubungi");
     }
   }
 
@@ -35,6 +52,7 @@ export default function NewTeacherPage() {
           <label className="block text-[10px]">Nama Guru (Full Name with Titles)<input className="mt-2 h-9 w-full rounded border border-[#cbd0d7] bg-[#f7f8fa] px-3 text-[12px]" value={name} onChange={(event) => setName(event.target.value)} placeholder="Dr. Ahmad Subagjo, M.Pd" required /></label>
           <label className="block text-[10px]">Mata Pelajaran (Subject Assignment)<input className="mt-2 h-9 w-full rounded border border-[#cbd0d7] bg-[#f7f8fa] px-3 text-[12px]" value={subject} onChange={(event) => setSubject(event.target.value)} required /></label>
           <label className="block text-[10px]">Kelas (Assigned Classes)<input className="mt-2 h-9 w-full rounded border border-[#cbd0d7] bg-[#f7f8fa] px-3 text-[12px]" value={classes} onChange={(event) => setClasses(event.target.value)} required /></label>
+          {error && <p className="rounded bg-red-50 px-3 py-2 text-[11px] text-red-700">{error}</p>}
           <div className="flex justify-end gap-3 border-t border-[#d6d9df] pt-5"><Link className="rounded border border-[#c94e4e] px-5 py-2 text-[11px] font-semibold text-[#c94e4e]" href="/admin/teachers">Cancel</Link><button className="rounded bg-[#168446] px-5 py-2 text-[11px] font-semibold text-white hover:bg-[#106d38]" type="submit">Save Teacher</button></div>
         </form>
       </div>
