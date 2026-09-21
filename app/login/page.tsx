@@ -29,13 +29,15 @@ export default function LoginPage() {
         return;
       }
 
-      if (data.user.role === selectedRole) {
-        router.push("/admin");
-        router.refresh();
+      if (data.user.role !== selectedRole) {
+        const roleLabel = selectedRole === "wakakurikulum" ? "Kurikulum" : selectedRole[0].toUpperCase() + selectedRole.slice(1);
+        setError(`Akun ini bukan akun ${roleLabel.toLowerCase()}.`);
         return;
       }
 
-      setError("Akun ini bukan akun admin.");
+      const destination = data.user.role === "admin" ? "/admin" : "/student";
+      router.push(destination);
+      router.refresh();
     } catch {
       setError("Server tidak dapat dihubungi.");
     } finally {
