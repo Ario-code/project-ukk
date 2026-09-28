@@ -1,29 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
-import { LayoutGrid, BookOpen, ClipboardList, Upload, Star, User, Bell, LogOut, type LucideIcon } from "lucide-react";
+import { LayoutGrid, GraduationCap, ClipboardList, Star, BarChart3, Bell, LogOut, type LucideIcon } from "lucide-react";
 
-type StudentShellProps = {
-  active: "dashboard" | "materi" | "assessment" | "upload" | "grades" | "profile";
-  children: ReactNode;
-};
+type GuruShellProps = { children: ReactNode };
 
-type NavItem = { key: StudentShellProps["active"]; icon: LucideIcon; label: string; href: string };
+const tabs = [
+  ["Classroom", "/guru"],
+  ["Exams", "/guru/assesmen"],
+  ["Internships", "/guru/internships"],
+] as const;
+
+type NavItem = { key: string; icon: LucideIcon; label: string; href: string };
 
 const navigation: NavItem[] = [
-  { key: "dashboard", icon: LayoutGrid, label: "Dashboard", href: "/student" },
-  { key: "materi", icon: BookOpen, label: "Materi", href: "/student/materi" },
-  { key: "assessment", icon: ClipboardList, label: "Assessment", href: "/student/assessment" },
-  { key: "upload", icon: Upload, label: "Upload Project & Tugas", href: "/student/upload" },
-  { key: "grades", icon: Star, label: "Grades", href: "/student/grades" },
-  { key: "profile", icon: User, label: "Profile", href: "/student/profile" },
+  { key: "dashboard", icon: LayoutGrid, label: "Dashboard", href: "/guru" },
+  { key: "murid", icon: GraduationCap, label: "Lihat Murid & Kelas", href: "/guru/murid" },
+  { key: "assesmen", icon: ClipboardList, label: "Assesmen", href: "/guru/assesmen" },
+  { key: "grades", icon: Star, label: "Grade Levels", href: "/guru/grades" },
+  { key: "reports", icon: BarChart3, label: "Reports", href: "/guru/reports" },
 ];
 
-export default function StudentShell({ active, children }: StudentShellProps) {
+export default function GuruShell({ children }: GuruShellProps) {
   const router = useRouter();
-  const [user, setUser] = useState<{ name: string; role: string } | null>(null);
+  const pathname = usePathname();
+  const [user, setUser] = useState<{ name: string } | null>(null);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -32,12 +35,7 @@ export default function StudentShell({ active, children }: StudentShellProps) {
       .catch(() => {});
   }, []);
 
-  const initials = (user?.name ?? "U")
-    .split(" ")
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
+  const initials = (user?.name ?? "G").split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 
   function handleLogout() {
     document.cookie = "token=; Max-Age=0; path=/";
@@ -52,8 +50,8 @@ export default function StudentShell({ active, children }: StudentShellProps) {
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-[#f3f5d9] text-[13px] font-bold text-[#1f2d4d]">SM</div>
               <div>
-                <p className="text-[17px] font-bold tracking-tight">SMK Link</p>
-                <p className="text-[10px] text-[#b6bdd7]">Vocational Management</p>
+                <p className="text-[17px] font-bold tracking-tight">SMK Citra Negara</p>
+                <p className="text-[10px] text-[#b6bdd7]">dwa</p>
               </div>
             </div>
           </div>
@@ -64,9 +62,7 @@ export default function StudentShell({ active, children }: StudentShellProps) {
                 key={key}
                 href={href}
                 className={`flex items-center gap-3 rounded-md px-3 py-3 transition ${
-                  active === key
-                    ? "bg-[#2a2f60] text-white shadow-inner"
-                    : "text-[#d0d7ef] hover:bg-[#1a234f]"
+                  pathname === href ? "bg-[#2a2f60] text-white shadow-inner" : "text-[#d0d7ef] hover:bg-[#1a234f]"
                 }`}
               >
                 <Icon size={17} strokeWidth={2} />
@@ -85,13 +81,16 @@ export default function StudentShell({ active, children }: StudentShellProps) {
         </aside>
 
         <div className="min-w-0 flex-1">
-          <header className="flex h-[72px] items-center justify-end gap-4 border-b border-[#dfe3ea] bg-white/70 px-6 backdrop-blur-sm">
-            <button type="button" aria-label="Notifications" className="text-[#3c4658]"><Bell size={20} /></button>
-            <div className="flex items-center gap-3">
-              <div className="text-right leading-tight">
-                <p className="text-[13px] font-semibold text-[#1f2430]">{user?.name ?? "..."}</p>
-                <p className="text-[10px] uppercase text-[#7c8290]">{user?.role ?? ""}</p>
-              </div>
+          <header className="flex h-[72px] items-center justify-between gap-4 border-b border-[#dfe3ea] bg-white/70 px-6 backdrop-blur-sm">
+            <nav className="flex gap-6 text-[14px] font-medium text-[#5d6776]">
+              {tabs.map(([label, href]) => (
+                <Link key={label} href={href} className={pathname === href ? "font-semibold text-[#111b46]" : ""}>
+                  {label}
+                </Link>
+              ))}
+            </nav>
+            <div className="flex items-center gap-4">
+              <button type="button" aria-label="Notifications" className="text-[#3c4658]"><Bell size={20} /></button>
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#dfeaf6] text-[11px] font-bold text-[#44576f]">{initials}</div>
             </div>
           </header>

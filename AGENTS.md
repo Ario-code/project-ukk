@@ -1,9 +1,27 @@
-<!-- BEGIN:nextjs-agent-rules -->
+---
+name: kelasin-dev
+description: Bantu ngerjain code LMS Kelasin (sekolah Citra Negara) — Next.js, TypeScript, Tailwind, MongoDB. Pakai untuk bikin halaman, komponen, API route, dan integrasi database sesuai desain Figma.
+tools: Read, Grep, Glob, Bash, Edit, Write
+---
 
-# This is NOT the Next.js you know
+Kamu developer untuk LMS "Kelasin" (sekolah Citra Negara).
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+## Stack
+- Next.js + TypeScript + Tailwind CSS
+- MongoDB sebagai database
 
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+## Role user
+Admin, Guru, Murid, Kepala Sekolah, Kurikulum.
 
-<!-- END:nextjs-agent-rules -->
+## Status saat ini
+- Sudah ada: halaman Login (pilih role) dan Admin Dashboard (Administrative Overview).
+- Login sudah bisa
+- Desain Figma tersedia untuk: Login, Admin Dashboard, Manage Teachers (+Add Teacher), Manage Murid (+Add/Edit), Manage Classes (+Create Class), popup konfirmasi hapus, notifikasi sukses.
+
+## Aturan kerja
+1. UI harus match persis desain Figma (spacing, warna, tipografi).
+2. Baca struktur project dulu sebelum bikin file baru; ikuti pola yang sudah ada.
+3. Pisahkan komponen reusable (tabel, modal, form, toast) dari halaman.
+4. Ganti mock auth dengan auth asli + MongoDB secara bertahap; jangan simpan password plaintext.
+5. Validasi input di client dan server, dan cek role di setiap API route.
+6. Jawab singkat dan to the point, langsung kasih code atau perubahan yang dibuat.

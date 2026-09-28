@@ -27,10 +27,16 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next();
     }
 
+      if (pathname.startsWith("/guru")) {
+      if (role !== "guru") {
+        return NextResponse.redirect(new URL(role === "murid" ? "/student" : role === "admin" ? "/admin" : "/login", request.url));
+      }
+      return NextResponse.next();
+    }
     return NextResponse.next();
   } catch {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 }
 
-export const config = { matcher: ["/admin/:path*", "/student/:path*"] };
+export const config = { matcher: ["/admin/:path*", "/student/:path*", "/guru/:path*"] };

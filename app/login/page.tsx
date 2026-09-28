@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Mail, Lock } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function LoginPage() {
         return;
       }
 
-      const destination = data.user.role === "admin" ? "/admin" : "/student";
+      const destination = data.user.role === "admin" ? "/admin" : data.user.role === "guru" ? "/guru" : "/student";
       router.push(destination);
       router.refresh();
     } catch {
@@ -62,14 +63,14 @@ export default function LoginPage() {
           <label className="block text-[10px] font-semibold text-[#333943]">
             Username or Email
             <span className="relative mt-1 block">
-              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#b8bec7]">♙</span>
+              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#b8bec7]"><Mail size={14} /></span>
               <input className="h-7 w-full rounded-[2px] border border-[#cbd0d7] bg-[#fafbfc] pl-8 pr-3 text-[11px] text-slate-900 outline-none transition placeholder:text-[#c5cad2] focus:border-blue-500 focus:ring-1 focus:ring-blue-200" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Enter your username" required />
             </span>
           </label>
           <label className="block text-[10px] font-semibold text-[#333943]">
             Password
             <span className="relative mt-1 block">
-              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#b8bec7]">▣</span>
+              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#b8bec7]"><Lock size={14} /></span>
               <input className="h-7 w-full rounded-[2px] border border-[#cbd0d7] bg-[#fafbfc] pl-8 pr-3 text-[11px] text-slate-900 outline-none transition placeholder:text-[#c5cad2] focus:border-blue-500 focus:ring-1 focus:ring-blue-200" type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Enter your password" required />
             </span>
           </label>
