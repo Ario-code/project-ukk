@@ -4,13 +4,22 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Mail, Lock } from "lucide-react";
 
+const roles = ["admin", "guru", "murid", "kepsek", "wakakurikulum"] as const;
+type Role = (typeof roles)[number];
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [selectedRole, setSelectedRole] = useState("admin");
+  const [selectedRole, setSelectedRole] = useState<Role>("admin");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const roleLabel = (role: Role) => {
+    if (role === "kepsek") return "Kepsek";
+    if (role === "wakakurikulum") return "Kurikulum";
+    return role[0].toUpperCase() + role.slice(1);
+  };
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -31,8 +40,7 @@ export default function LoginPage() {
       }
 
       if (data.user.role !== selectedRole) {
-        const roleLabel = selectedRole === "wakakurikulum" ? "Kurikulum" : selectedRole[0].toUpperCase() + selectedRole.slice(1);
-        setError(`Akun ini bukan akun ${roleLabel.toLowerCase()}.`);
+        setError(`Akun ini bukan akun ${roleLabel(selectedRole).toLowerCase()}.`);
         return;
       }
 
@@ -76,9 +84,9 @@ export default function LoginPage() {
           </label>
 
           <div className="flex gap-2 pt-1">
-            {["admin", "guru", "murid", "kepsek", "wakakurikulum"].map((role) => (
+            {roles.map((role) => (
               <button className={`h-8 flex-1 rounded-[2px] px-1 text-[10px] font-semibold text-white transition ${selectedRole === role ? "bg-[#06499a] ring-2 ring-[#06499a]/20" : "bg-[#06499a] opacity-90 hover:opacity-100"}`} type="button" key={role} onClick={() => setSelectedRole(role)}>
-                {role === "wakakurikulum" ? "Kurikulum" : role[0].toUpperCase() + role.slice(1)}
+                {role === "wakakurikulum" ? "Kurikulum" : role === "kepsek" ? "Kepsek" : role[0].toUpperCase() + role.slice(1)}
               </button>
             ))}
           </div>

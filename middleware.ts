@@ -14,22 +14,34 @@ export async function middleware(request: NextRequest) {
 
     if (pathname.startsWith("/admin")) {
       if (role !== "admin") {
-        return NextResponse.redirect(new URL(role === "murid" ? "/student" : "/login", request.url));
+        return NextResponse.redirect(
+          new URL(
+            role === "guru" ? "/guru" : ["murid", "kepsek", "wakakurikulum"].includes(role) ? "/student" : "/login",
+            request.url
+          )
+        );
       }
       return NextResponse.next();
     }
 
     if (pathname.startsWith("/student")) {
-      const allowedRoles = ["murid", "guru", "kepsek", "wakakurikulum"];
-      if (!allowedRoles.includes(role)) {
-        return NextResponse.redirect(new URL(role === "admin" ? "/admin" : "/login", request.url));
+      const allowedStudentRoles = ["murid", "guru", "kepsek", "wakakurikulum"];
+      if (!allowedStudentRoles.includes(role)) {
+        return NextResponse.redirect(
+          new URL(role === "admin" ? "/admin" : role === "guru" ? "/guru" : "/login", request.url)
+        );
       }
       return NextResponse.next();
     }
 
-      if (pathname.startsWith("/guru")) {
+    if (pathname.startsWith("/guru")) {
       if (role !== "guru") {
-        return NextResponse.redirect(new URL(role === "murid" ? "/student" : role === "admin" ? "/admin" : "/login", request.url));
+        return NextResponse.redirect(
+          new URL(
+            ["murid", "kepsek", "wakakurikulum"].includes(role) ? "/student" : role === "admin" ? "/admin" : "/login",
+            request.url
+          )
+        );
       }
       return NextResponse.next();
     }

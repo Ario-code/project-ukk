@@ -17,11 +17,13 @@ export default async function GuruDashboardPage() {
 
   return (
     <GuruShell>
-      <h1 className="mb-8 text-[36px] font-bold text-[#1d2430]">Good morning, {user?.name ?? "Guru"}</h1>
+      <h1 className="mb-8 text-[36px] font-bold text-[#1d2430]">Selamat Datang, Guru!</h1>
+
+      {/* {user?.name ?? "Guru"} */}
 
       <div className="rounded-[20px] border border-[#dfe3ea] bg-white">
         <div className="border-b border-[#e9edf2] bg-[#f7f9fb] px-6 py-4">
-          <h2 className="text-[18px] font-bold text-[#1d2430]">New Activity</h2>
+          <h2 className="text-[18px] font-bold text-[#1d2430]">Histori</h2>
         </div>
         <div className="grid gap-6 p-6 md:grid-cols-2">
           <div>

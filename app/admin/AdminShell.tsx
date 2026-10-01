@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
-import { LayoutGrid, Users, GraduationCap, Layers, BookOpen, Bell, LogOut, type LucideIcon } from "lucide-react";
+import { LayoutGrid, Users, GraduationCap, Layers, Bell, LogOut, type LucideIcon } from "lucide-react";
 
 type AdminShellProps = {
-  active: "dashboard" | "teachers" | "students" | "classes" | "subjects";
+  active: "dashboard" | "teachers" | "students" | "classes";
   children: ReactNode;
 };
 
@@ -17,7 +17,6 @@ const navigation: NavItem[] = [
   { key: "teachers", icon: Users, label: "Manage Teachers", href: "/admin/teachers" },
   { key: "students", icon: GraduationCap, label: "Manage Students", href: "/admin/students" },
   { key: "classes", icon: Layers, label: "Manage Classes", href: "/admin/classes" },
-  { key: "subjects", icon: BookOpen, label: "Manage Subjects", href: "#" },
 ];
 
 export default function AdminShell({ active, children }: AdminShellProps) {

@@ -19,14 +19,13 @@ const navigation: NavItem[] = [
   { key: "dashboard", icon: LayoutGrid, label: "Dashboard", href: "/guru" },
   { key: "murid", icon: GraduationCap, label: "Lihat Murid & Kelas", href: "/guru/murid" },
   { key: "assesmen", icon: ClipboardList, label: "Assesmen", href: "/guru/assesmen" },
-  { key: "grades", icon: Star, label: "Grade Levels", href: "/guru/grades" },
-  { key: "reports", icon: BarChart3, label: "Reports", href: "/guru/reports" },
 ];
 
 export default function GuruShell({ children }: GuruShellProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [user, setUser] = useState<{ name: string } | null>(null);
+  const showHeader = pathname === "/guru" || pathname.startsWith("/guru/murid") || pathname.startsWith("/guru/assesmen");
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -81,18 +80,27 @@ export default function GuruShell({ children }: GuruShellProps) {
         </aside>
 
         <div className="min-w-0 flex-1">
-          <header className="flex h-[72px] items-center justify-between gap-4 border-b border-[#dfe3ea] bg-white/70 px-6 backdrop-blur-sm">
-            <nav className="flex gap-6 text-[14px] font-medium text-[#5d6776]">
-              {tabs.map(([label, href]) => (
-                <Link key={label} href={href} className={pathname === href ? "font-semibold text-[#111b46]" : ""}>
-                  {label}
-                </Link>
-              ))}
-            </nav>
-            <div className="flex items-center gap-4">
-              <button type="button" aria-label="Notifications" className="text-[#3c4658]"><Bell size={20} /></button>
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#dfeaf6] text-[11px] font-bold text-[#44576f]">{initials}</div>
-            </div>
+          <header className="flex h-[72px] items-center justify-end gap-4 border-b border-[#dfe3ea] bg-white/70 px-6 backdrop-blur-sm">
+            {showHeader ? (
+              <>
+                <button type="button" aria-label="Notifications" className="text-[#3c4658]"><Bell size={20} /></button>
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#dfeaf6] text-[11px] font-bold text-[#44576f]">{initials}</div>
+              </>
+            ) : (
+              <>
+                <nav className="flex gap-6 text-[14px] font-medium text-[#5d6776]">
+                  {tabs.map(([label, href]) => (
+                    <Link key={label} href={href} className={pathname === href ? "font-semibold text-[#111b46]" : ""}>
+                      {label}
+                    </Link>
+                  ))}
+                </nav>
+                <div className="flex items-center gap-4">
+                  <button type="button" aria-label="Notifications" className="text-[#3c4658]"><Bell size={20} /></button>
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#dfeaf6] text-[11px] font-bold text-[#44576f]">{initials}</div>
+                </div>
+              </>
+            )}
           </header>
 
           <div className="px-7 py-8 lg:px-[32px]">{children}</div>

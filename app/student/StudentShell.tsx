@@ -3,7 +3,17 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
-import { LayoutGrid, BookOpen, ClipboardList, Upload, Star, User, Bell, LogOut, type LucideIcon } from "lucide-react";
+import {
+  Bell,
+  BookOpenText,
+  ClipboardCheck,
+  FileUp,
+  LayoutGrid,
+  LogOut,
+  Trophy,
+  UserCircle2,
+  type LucideIcon,
+} from "lucide-react";
 
 type StudentShellProps = {
   active: "dashboard" | "materi" | "assessment" | "upload" | "grades" | "profile";
@@ -14,11 +24,11 @@ type NavItem = { key: StudentShellProps["active"]; icon: LucideIcon; label: stri
 
 const navigation: NavItem[] = [
   { key: "dashboard", icon: LayoutGrid, label: "Dashboard", href: "/student" },
-  { key: "materi", icon: BookOpen, label: "Materi", href: "/student/materi" },
-  { key: "assessment", icon: ClipboardList, label: "Assessment", href: "/student/assessment" },
-  { key: "upload", icon: Upload, label: "Upload Project & Tugas", href: "/student/upload" },
-  { key: "grades", icon: Star, label: "Grades", href: "/student/grades" },
-  { key: "profile", icon: User, label: "Profile", href: "/student/profile" },
+  { key: "materi", icon: BookOpenText, label: "Materi", href: "/student/materi" },
+  { key: "assessment", icon: ClipboardCheck, label: "Assessment", href: "/student/assessment" },
+  { key: "upload", icon: FileUp, label: "Upload Project & Tugas", href: "/student/upload" },
+  { key: "grades", icon: Trophy, label: "Grades", href: "/student/grades" },
+  { key: "profile", icon: UserCircle2, label: "Profile", href: "/student/profile" },
 ];
 
 export default function StudentShell({ active, children }: StudentShellProps) {

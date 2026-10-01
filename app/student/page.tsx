@@ -23,7 +23,7 @@ export default async function StudentDashboardPage() {
 
   return (
     <StudentShell active="dashboard">
-      <h1 className="mb-8 text-[52px] font-bold tracking-[-1.5px] text-[#1e2430]">Ciao, Students!</h1>
+      <h1 className="mb-8 text-[52px] font-bold tracking-[-1.5px] text-[#1e2430]">Selamat Datang, Murid!</h1>
 
       <div className="grid gap-6 md:grid-cols-3">
         {cards.map((card) => (

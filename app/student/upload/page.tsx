@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowUpFromLine, Download, FileText, UploadCloud } from "lucide-react";
 import { FormEvent, useEffect, useState } from "react";
 import StudentShell from "../StudentShell";
 
@@ -45,8 +46,9 @@ export default function StudentUploadPage() {
     <StudentShell active="upload">
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-[52px] font-bold tracking-[-1.5px] text-[#1d2430]">Upload Project & Tugas</h1>
-        <button type="button" onClick={() => setOpen(!open)} className="rounded-xl bg-[#111b46] px-5 py-3 text-[14px] font-semibold text-white shadow-sm">
-          ⤴ Upload
+        <button type="button" onClick={() => setOpen(!open)} className="inline-flex items-center gap-2 rounded-xl bg-[#111b46] px-5 py-3 text-[14px] font-semibold text-white shadow-sm">
+          <ArrowUpFromLine className="h-4 w-4" />
+          Upload
         </button>
       </div>
 
@@ -65,9 +67,9 @@ export default function StudentUploadPage() {
               type="button"
               disabled={loading}
               onClick={handleSubmit as unknown as () => void}
-              className="rounded-xl bg-[#111b46] px-5 py-3 text-[14px] font-semibold text-white disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#111b46] px-5 py-3 text-[14px] font-semibold text-white disabled:opacity-60"
             >
-              {loading ? "Mengupload..." : "Kirim"}
+              {loading ? <><UploadCloud className="h-4 w-4" /> Mengupload...</> : <><ArrowUpFromLine className="h-4 w-4" /> Kirim</>}
             </button>
           </div>
         </div>
@@ -79,11 +81,16 @@ export default function StudentUploadPage() {
         <div className="grid gap-6 xl:grid-cols-3">
           {items.map((item) => (
             <div key={item._id} className="rounded-[22px] border border-[#dfe3ea] bg-white p-4 shadow-[0_2px_8px_rgba(15,23,42,0.03)]">
-              <div className="mb-6 flex h-44 items-center justify-center rounded-[18px] border border-[#dfe3ea] bg-[#eceef0] text-[64px] text-[#1a2230]">▣</div>
+              <div className="mb-6 flex h-44 items-center justify-center rounded-[18px] border border-[#dfe3ea] bg-[#eceef0] text-[#1a2230]">
+                <FileText className="h-16 w-16" />
+              </div>
               <div className="mb-3 inline-flex rounded-full bg-[#edf1f7] px-2 py-1 text-[11px] font-medium text-[#3d4c65]">{item.fileType}</div>
               <div className="text-[22px] font-semibold leading-tight text-[#1d2430]">{item.title}</div>
               <div className="mt-2 text-[13px] text-[#667085]">{item.fileName} · {item.sizeLabel}</div>
-              <a href={item.fileUrl} className="mt-4 inline-block text-[14px] font-medium text-[#2a6fdd]">Download ↓</a>
+              <a href={item.fileUrl} className="mt-4 inline-flex items-center gap-2 text-[14px] font-medium text-[#2a6fdd]">
+                <Download className="h-4 w-4" />
+                Download
+              </a>
             </div>
           ))}
         </div>
