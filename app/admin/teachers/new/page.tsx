@@ -1,43 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminShell from "../../AdminShell";
 
 const subjectOptions = ["Matematika", "Bahasa Indonesia", "Bahasa Inggris", "Pendidikan Pancasila", "Informatika", "IPA", "IPS", "Produktif", "Seni Budaya", "PJOK"];
-const fallbackClassOptions = ["X - PPLG", "XI - PPLG", "XII - PPLG", "X - DKV", "XI - DKV", "XII - DKV", "X - MPLB", "XI - MPLB", "XII - MPLB"];
+const majorOptions = ["PPLG", "DKV", "BDR", "MPLB", "PH", "TJKT"];
 
 export default function NewTeacherPage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [subject, setSubject] = useState("");
-  const [classes, setClasses] = useState("");
+  const [major, setMajor] = useState("");
   const [showNotification, setShowNotification] = useState(false);
   const [error, setError] = useState("");
-  const [classOptions, setClassOptions] = useState<string[]>(fallbackClassOptions);
-
-  useEffect(() => {
-    async function fetchClasses() {
-      try {
-        const response = await fetch("/api/classes");
-        if (!response.ok) return;
-        const data = await response.json();
-        const classes = Array.isArray(data?.classes) ? data.classes : [];
-        const nextOptions = classes
-          .map((item: { name?: string }) => item.name)
-          .filter((value: unknown): value is string => typeof value === "string" && Boolean(value.trim()));
-
-        if (nextOptions.length > 0) {
-          setClassOptions(nextOptions);
-        }
-      } catch {
-        // fallback to static options if the API is unavailable
-      }
-    }
-
-    fetchClasses();
-  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -47,7 +24,7 @@ export default function NewTeacherPage() {
       const response = await fetch("/api/teachers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, subject, classes }),
+        body: JSON.stringify({ name, subject, major }),
       });
       const data = await response.json();
 
@@ -72,14 +49,14 @@ export default function NewTeacherPage() {
           <button className="text-xl leading-none text-[#4b4b4b] hover:text-black" type="button" aria-label="Tutup notifikasi" onClick={() => setShowNotification(false)}>×</button>
         </div>
       )}
-      <div className="mx-auto max-w-[575px] rounded-lg border border-[#d6d9df] bg-white">
-        <h1 className="border-b border-[#d6d9df] px-6 py-5 text-[18px] font-semibold">Add New Teacher</h1>
-        <form className="space-y-5 p-6" onSubmit={handleSubmit}>
-          <label className="block text-[10px]">Nama Guru (Full Name with Titles)<input className="mt-2 h-9 w-full rounded border border-[#cbd0d7] bg-[#f7f8fa] px-3 text-[12px]" value={name} onChange={(event) => setName(event.target.value)} placeholder="Dr. Ahmad Subagjo, M.Pd" required /></label>
-          <label className="block text-[10px]">Mata Pelajaran (Subject Assignment)<select className="mt-2 h-9 w-full rounded border border-[#cbd0d7] bg-[#f7f8fa] px-3 text-[12px]" value={subject} onChange={(event) => setSubject(event.target.value)} required><option value="">Pilih mata pelajaran</option>{subjectOptions.map((option) => <option key={option} value={option}>{option}</option>)}</select></label>
-          <label className="block text-[10px]">Kelas (Assigned Classes)<select className="mt-2 h-9 w-full rounded border border-[#cbd0d7] bg-[#f7f8fa] px-3 text-[12px]" value={classes} onChange={(event) => setClasses(event.target.value)} required><option value="">Pilih kelas</option>{classOptions.map((option) => <option key={option} value={option}>{option}</option>)}</select></label>
+      <div className="mx-auto max-w-2xl overflow-hidden rounded-lg border border-[#d4d8df] bg-white shadow-sm">
+        <h1 className="border-b border-[#d4d8df] px-6 py-5 text-lg font-bold text-[#353536]">Tambah guru</h1>
+        <form className="space-y-5 p-6 sm:p-8" onSubmit={handleSubmit}>
+          <label className="block text-xs font-semibold text-[#706f70]">Nama lengkap<input className="mt-2 h-11 w-full rounded-lg border border-[#d4d8df] bg-[#ebedf1] px-3 text-sm text-[#353536] outline-none transition focus:border-[#353536] focus:ring-4 focus:ring-[#d4d8df]" value={name} onChange={(event) => setName(event.target.value)} placeholder="Contoh: Ahmad Subagjo, M.Pd" required /></label>
+          <label className="block text-xs font-semibold text-[#706f70]">Mata pelajaran<select className="mt-2 h-11 w-full rounded-lg border border-[#d4d8df] bg-[#ebedf1] px-3 text-sm text-[#353536] outline-none transition focus:border-[#353536] focus:ring-4 focus:ring-[#d4d8df]" value={subject} onChange={(event) => setSubject(event.target.value)} required><option value="">Pilih mata pelajaran</option>{subjectOptions.map((option) => <option key={option} value={option}>{option}</option>)}</select></label>
+          <label className="block text-xs font-semibold text-[#706f70]">Jurusan<select className="mt-2 h-11 w-full rounded-lg border border-[#d4d8df] bg-[#ebedf1] px-3 text-sm text-[#353536] outline-none transition focus:border-[#353536] focus:ring-4 focus:ring-[#d4d8df]" value={major} onChange={(event) => setMajor(event.target.value)} required><option value="">Pilih jurusan</option>{majorOptions.map((option) => <option key={option} value={option}>{option}</option>)}</select></label>
           {error && <p className="rounded bg-red-50 px-3 py-2 text-[11px] text-red-700">{error}</p>}
-          <div className="flex justify-end gap-3 border-t border-[#d6d9df] pt-5"><Link className="rounded border border-[#c94e4e] px-5 py-2 text-[11px] font-semibold text-[#c94e4e]" href="/admin/teachers">Cancel</Link><button className="rounded bg-[#168446] px-5 py-2 text-[11px] font-semibold text-white hover:bg-[#106d38]" type="submit">Save Teacher</button></div>
+          <div className="flex justify-end gap-3 border-t border-[#d4d8df] pt-5"><Link className="rounded-lg border border-[#d4d8df] px-5 py-2.5 text-sm font-semibold text-[#706f70] transition hover:bg-[#ebedf1]" href="/admin/teachers">Batal</Link><button className="rounded-lg bg-[#168446] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#106d38]" type="submit">Simpan guru</button></div>
         </form>
       </div>
     </AdminShell>

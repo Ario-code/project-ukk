@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { isValidObjectId } from "mongoose";
 import { connectDB } from "@/lib/mongodb";
 import Student from "@/models/student";
+import { findMatchingAccount } from "@/lib/account-linking";
 import { recordActivity } from "@/lib/activity";
 
 type Context = { params: Promise<{ id: string }> };
@@ -36,7 +37,12 @@ export async function PUT(request: Request, context: Context) {
     if (!update.name || !update.className || !update.major) return NextResponse.json({ success: false, message: "Nama, jurusan, dan kelas wajib diisi" }, { status: 400 });
 
     await connectDB();
-    const student = await Student.findByIdAndUpdate(id, update, { new: true, runValidators: true }).lean();
+    const account = await findMatchingAccount(update.name, "murid");
+    const student = await Student.findByIdAndUpdate(
+      id,
+      { ...update, userId: account?._id ?? null },
+      { new: true, runValidators: true }
+    ).lean();
     if (!student) return NextResponse.json({ success: false, message: "Murid tidak ditemukan" }, { status: 404 });
     return NextResponse.json({ success: true, student });
   } catch (error) {

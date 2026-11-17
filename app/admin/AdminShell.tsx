@@ -2,25 +2,27 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ReactNode } from "react";
-import { LayoutGrid, Users, GraduationCap, Layers, Bell, LogOut, type LucideIcon } from "lucide-react";
+import { type ReactNode } from "react";
+import { BookOpen, GraduationCap, LayoutDashboard, LogOut, School, Users, type LucideIcon } from "lucide-react";
 
 type AdminShellProps = {
-  active: "dashboard" | "teachers" | "students" | "classes";
+  active: "dashboard" | "teachers" | "students" | "classes" | "users";
   children: ReactNode;
 };
 
 type NavItem = { key: AdminShellProps["active"]; icon: LucideIcon; label: string; href: string };
 
 const navigation: NavItem[] = [
-  { key: "dashboard", icon: LayoutGrid, label: "Dashboard", href: "/admin" },
-  { key: "teachers", icon: Users, label: "Manage Teachers", href: "/admin/teachers" },
-  { key: "students", icon: GraduationCap, label: "Manage Students", href: "/admin/students" },
-  { key: "classes", icon: Layers, label: "Manage Classes", href: "/admin/classes" },
+  { key: "dashboard", icon: LayoutDashboard, label: "Dashboard", href: "/admin" },
+  { key: "users", icon: Users, label: "Akun Pengguna", href: "/admin/users" },
+  { key: "teachers", icon: BookOpen, label: "Data Guru", href: "/admin/teachers" },
+  { key: "students", icon: GraduationCap, label: "Data Murid", href: "/admin/students" },
+  { key: "classes", icon: School, label: "Data Kelas", href: "/admin/classes" },
 ];
 
 export default function AdminShell({ active, children }: AdminShellProps) {
   const router = useRouter();
+  const activeItem = navigation.find((item) => item.key === active);
 
   function handleLogout() {
     document.cookie = "token=; Max-Age=0; path=/";
@@ -28,49 +30,53 @@ export default function AdminShell({ active, children }: AdminShellProps) {
   }
 
   return (
-    <main className="min-h-screen bg-[#f8f9fb] text-[#202329]">
-      <div className="flex min-h-screen">
-        <aside className="flex w-[210px] shrink-0 flex-col bg-[#100b32] text-white">
-          <div className="px-[18px] pb-7 pt-7">
-            <p className="text-[17px] font-bold tracking-tight">SMK Citra Negara</p>
-            <p className="mt-1 text-[10px] text-[#a5a1bd]">Admin Management</p>
-          </div>
-          <nav className="space-y-1 text-[12px] font-medium">
-            {navigation.map(({ key, icon: Icon, label, href }) =>
-              href === "#" ? (
-                <span className="flex items-center gap-3 px-[18px] py-3 text-[#b7b4ca]" key={key}>
-                  <Icon size={15} strokeWidth={2} />
-                  {label}
-                </span>
-              ) : (
-                <Link
-                  className={`flex items-center gap-3 border-l-4 px-[14px] py-3 ${
-                    active === key ? "border-white bg-[#2a254b] text-white" : "border-transparent text-[#b7b4ca] hover:bg-[#1c1740]"
-                  }`}
-                  href={href}
-                  key={key}
-                >
-                  <Icon size={15} strokeWidth={2} />
-                  {label}
-                </Link>
-              )
-            )}
-          </nav>
-          <button className="mt-auto flex items-center gap-2 px-[18px] pb-8 text-left text-[12px] font-medium text-[#d4523f] hover:text-red-300" onClick={handleLogout}>
-            <LogOut size={15} /> LogOut
-          </button>
-        </aside>
-        <div className="min-w-0 flex-1">
-          <header className="flex h-12 items-center justify-end gap-4 border-b border-[#dfe2e7] bg-white px-6">
-            <Bell size={17} className="text-[#555a63]" />
-            <span className="h-7 border-l border-[#dfe2e7]" />
-            <div className="text-right leading-tight">
-              <p className="text-[12px] font-bold">Admin User</p>
-              <p className="text-[9px] text-[#8b9098]">Admin</p>
+    <main className="min-h-screen bg-[#ebedf1] text-[#353536]">
+      <div className="flex min-h-screen flex-col lg:flex-row">
+        <aside className="flex w-full shrink-0 flex-col border-b border-[#d4d8df] bg-white text-[#353536] lg:min-h-screen lg:w-[250px] lg:border-b-0 lg:border-r">
+          <div className="flex items-center gap-3 px-5 py-4 lg:px-6 lg:py-7">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#ebedf1] text-[#353536]"><School size={21} strokeWidth={2.2} /></span>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-bold tracking-tight">Kelasin</p>
+              <p className="mt-1 text-[11px] text-[#706f70]">administrasi</p>
             </div>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#dce5ee] text-xs font-bold text-[#31445b]">AU</div>
+          </div>
+          <nav aria-label="Navigasi admin" className="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-col lg:overflow-visible lg:px-3 lg:pb-0">
+            {navigation.map(({ key, icon: Icon, label, href }) => (
+              <Link
+                aria-current={active === key ? "page" : undefined}
+                className={`flex min-w-max items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                  active === key ? "bg-[#ebedf1] text-[#353536]" : "text-[#706f70] hover:bg-[#ebedf1] hover:text-[#353536]"
+                }`}
+                href={href}
+                key={key}
+              >
+                <Icon size={17} strokeWidth={2} />
+                {label}
+              </Link>
+            ))}
+          </nav>
+          <div className="mt-auto hidden px-6 pb-6 pt-10 text-[11px] text-[#acadb1] lg:block">Portal Manajemen Sekolah</div>
+        </aside>
+
+        <div className="min-w-0 flex-1">
+          <header className="flex min-h-16 items-center justify-between border-b border-[#d4d8df] bg-white px-4 sm:px-7">
+            <div>
+              <p className="text-[11px] font-medium text-[#706f70]">Administrasi Sekolah <span className="px-1 text-[#acadb1]">/</span> Admin</p>
+              <p className="mt-1 text-sm font-semibold text-[#353536]">{activeItem?.label}</p>
+            </div>
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="hidden text-right leading-tight sm:block">
+                <p className="text-xs font-semibold">Admin User</p>
+                <p className="mt-1 text-[10px] text-[#706f70]">Administrator</p>
+              </div>
+              <div aria-label="Admin User" className="flex h-9 w-9 items-center justify-center rounded-full bg-[#ebedf1] text-xs font-bold text-[#353536]">AU</div>
+              <span className="h-7 border-l border-[#e0e6e1]" />
+              <button className="flex h-9 w-9 items-center justify-center rounded-lg text-[#706f70] transition hover:bg-[#ebedf1] hover:text-[#080808]" onClick={handleLogout} title="Keluar" aria-label="Keluar">
+                <LogOut size={17} />
+              </button>
+            </div>
           </header>
-          <div className="px-7 py-8 lg:px-[30px]">{children}</div>
+          <div className="px-4 py-6 sm:px-7 sm:py-8 lg:px-9">{children}</div>
         </div>
       </div>
     </main>

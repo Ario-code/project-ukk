@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { type FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import AdminShell from "../../AdminShell";
 
 const majors = ["PPLG", "DKV", "BDR", "MPLB", "PH", "TJKT"];
@@ -37,8 +38,23 @@ export default function NewClassPage() {
     }
   }
 
-  return <AdminShell active="classes">
-    {showNotification && <div className="fixed right-6 top-5 z-50 flex w-[296px] items-start gap-3 rounded-xl border border-[#b8f0c7] bg-white px-4 py-4 shadow-[0_5px_16px_rgba(24,120,54,0.22)]" role="status"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#baffc7] text-sm font-bold text-[#0dce35]">✓</span><div className="min-w-0 flex-1 leading-tight"><p className="text-[14px] font-bold text-[#06a928]">Berhasil Nihh!</p><p className="mt-1 text-[12px] text-[#4d5157]">Kelas berhasil dibuat</p></div><button className="text-xl leading-none text-[#4b4b4b]" type="button" aria-label="Tutup notifikasi" onClick={() => setShowNotification(false)}>×</button></div>}
-    <div className="mx-auto max-w-[575px] rounded-lg border border-[#d6d9df] bg-white p-6"><form className="space-y-5" onSubmit={handleSubmit}><div><label className="block text-[11px] font-semibold uppercase tracking-wide text-[#60656e]">Kelas Berapa</label><div className="mt-2 flex gap-2">{["X", "XI", "XII"].map((level) => <button className={`h-10 w-[68px] rounded-lg border text-[12px] font-semibold ${grade === level ? "border-[#05091b] bg-[#05091b] text-white" : "border-[#d6d9df] bg-white text-[#30343a]"}`} type="button" key={level} onClick={() => setGrade(level)}>{level}</button>)}</div></div><label className="block text-[11px] font-semibold uppercase tracking-wide text-[#60656e]">Jurusan<select className="mt-2 h-10 w-full rounded border border-[#cbd0d7] bg-white px-3 text-[12px] font-normal normal-case tracking-normal" value={major} onChange={(event) => setMajor(event.target.value)} required><option value="">Select</option>{majors.map((option) => <option key={option} value={option}>{option}</option>)}</select></label><label className="block text-[11px] font-semibold uppercase tracking-wide text-[#60656e]">Wali Kelas<input className="mt-2 h-10 w-full rounded border border-[#cbd0d7] bg-white px-3 text-[12px] font-normal normal-case tracking-normal" value={homeroomTeacher} onChange={(event) => setHomeroomTeacher(event.target.value)} required /></label><label className="block text-[11px] font-semibold uppercase tracking-wide text-[#60656e]">Berapa Murid<input className="mt-2 h-10 w-full rounded border border-[#cbd0d7] bg-white px-3 text-[12px] font-normal normal-case tracking-normal" type="number" min="1" value={studentCount} onChange={(event) => setStudentCount(event.target.value)} required /></label>{error && <p className="rounded bg-red-50 px-3 py-2 text-[11px] text-red-700">{error}</p>}<div className="flex justify-end gap-3 border-t border-[#d6d9df] pt-5"><Link className="rounded border border-[#c94e4e] px-5 py-2 text-[11px] font-semibold text-[#c94e4e]" href="/admin/classes">Cancel</Link><button className="rounded bg-[#168446] px-5 py-2 text-[11px] font-semibold text-white hover:bg-[#106d38]" type="submit">⊙ Buat Kelas</button></div></form></div>
-  </AdminShell>;
+  return (
+    <AdminShell active="classes">
+      {showNotification && <div className="fixed right-5 top-5 z-50 rounded-lg border border-[#c8dfcb] bg-white px-4 py-3 text-sm font-semibold text-[#28734f] shadow-lg" role="status">Kelas berhasil dibuat</div>}
+      <div className="mx-auto max-w-3xl">
+        <Link className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-[#706f70] transition hover:text-[#353536]" href="/admin/classes"><ArrowLeft size={16} /> Kembali ke kelas</Link>
+        <div className="mb-6"><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#706f70]">Struktur akademik</p><h1 className="mt-2 text-3xl font-bold tracking-tight text-[#353536]">Buat kelas baru</h1><p className="mt-2 text-sm text-[#706f70]">Lengkapi informasi rombongan belajar dan wali kelas.</p></div>
+        <form className="rounded-lg border border-[#d4d8df] bg-white p-6 shadow-sm sm:p-8" onSubmit={handleSubmit}>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <fieldset className="sm:col-span-2"><legend className="text-xs font-semibold text-[#706f70]">Tingkat kelas</legend><div className="mt-2 inline-flex rounded-lg border border-[#d4d8df] bg-[#ebedf1] p-1">{["X", "XI", "XII"].map((level) => <button className={`min-w-16 rounded-md px-4 py-2 text-sm font-semibold transition ${grade === level ? "bg-[#353536] text-white shadow-sm" : "text-[#706f70] hover:bg-white"}`} type="button" key={level} onClick={() => setGrade(level)} aria-pressed={grade === level}>{level}</button>)}</div></fieldset>
+            <label className="block text-xs font-semibold text-[#706f70]">Jurusan<select className="mt-2 h-11 w-full rounded-lg border border-[#d4d8df] bg-[#ebedf1] px-3 text-sm text-[#353536] outline-none transition focus:border-[#353536] focus:ring-4 focus:ring-[#d4d8df]" value={major} onChange={(event) => setMajor(event.target.value)} required><option value="">Pilih jurusan</option>{majors.map((option) => <option key={option} value={option}>{option}</option>)}</select></label>
+            <label className="block text-xs font-semibold text-[#706f70]">Jumlah murid<input className="mt-2 h-11 w-full rounded-lg border border-[#d4d8df] bg-[#ebedf1] px-3 text-sm text-[#353536] outline-none transition focus:border-[#353536] focus:ring-4 focus:ring-[#d4d8df]" type="number" min="1" value={studentCount} onChange={(event) => setStudentCount(event.target.value)} required /></label>
+            <label className="block text-xs font-semibold text-[#706f70] sm:col-span-2">Wali kelas<input className="mt-2 h-11 w-full rounded-lg border border-[#d4d8df] bg-[#ebedf1] px-3 text-sm text-[#353536] outline-none transition focus:border-[#353536] focus:ring-4 focus:ring-[#d4d8df]" value={homeroomTeacher} onChange={(event) => setHomeroomTeacher(event.target.value)} placeholder="Masukkan nama wali kelas" required /></label>
+          </div>
+          {error && <p className="mt-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
+          <div className="mt-7 flex justify-end gap-3 border-t border-[#d4d8df] pt-5"><Link className="rounded-lg border border-[#d4d8df] px-5 py-2.5 text-sm font-semibold text-[#706f70] transition hover:bg-[#ebedf1]" href="/admin/classes">Batal</Link><button className="rounded-lg bg-[#168446] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#106d38]" type="submit">Simpan kelas</button></div>
+        </form>
+      </div>
+    </AdminShell>
+  );
 }

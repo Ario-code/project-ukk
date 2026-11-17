@@ -7,6 +7,7 @@ export interface IStudent extends Document {
   major: string;
   status: "Active" | "Inactive";
   classId?: mongoose.Types.ObjectId;
+  userId?: mongoose.Types.ObjectId;
 }
 
 const studentSchema = new Schema<IStudent>(
@@ -17,6 +18,7 @@ const studentSchema = new Schema<IStudent>(
     major: { type: String, default: "-", trim: true },
     status: { type: String, enum: ["Active", "Inactive"], default: "Active" },
     classId: { type: Schema.Types.ObjectId, ref: "SchoolClass" },
+    userId: { type: Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true }
 );

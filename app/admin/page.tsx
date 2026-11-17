@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import AdminShell from "./AdminShell";
-import { Users, GraduationCap, UserPlus, LayoutGrid, CheckCircle2, Clock } from "lucide-react";
+import { ArrowUpRight, BookOpen, CheckCircle2, Clock3, GraduationCap, School, Upload, UserRoundPlus, Users } from "lucide-react";
 
 type Activity = { _id: string; icon: string; activity: string; user: string; status: "Completed" | "Pending"; createdAt: string };
 type Statistics = { teachers: number; students: number; classes: number };
 
 function formatTimestamp(value: string) {
-  return new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
+  return new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
 }
 
 export default function AdminPage() {
@@ -34,56 +34,75 @@ export default function AdminPage() {
 
   return (
     <AdminShell active="dashboard">
-      <div className="mb-7">
-        <h1 className="text-[25px] font-bold tracking-[-0.5px]">Admin Overview</h1>
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-[#353536]">Selamat datang, Admin</h1>
+          <p className="mt-2 text-sm text-[#706f70]">Pantau data dan aktivitas administrasi sekolah dari sini.</p>
+        </div>
+        <Link className="inline-flex items-center gap-2 rounded-lg bg-[#168446] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#106d38]" href="/admin/users/new">
+          <UserRoundPlus size={17} /> Buat akun
+        </Link>
       </div>
-      <div className="grid gap-5 xl:grid-cols-[160px_160px_1fr]">
-        <div className="rounded-lg border border-[#d6d9df] bg-white p-5">
-          <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-[#e9eff8] text-[#3457a6]"><Users size={17} /></div>
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-[#737983]">Total teachers</p>
-          <p className="mt-1 text-[34px] font-bold leading-none">{statistics.teachers}</p>
-        </div>
-        <div className="rounded-lg border border-[#d6d9df] bg-white p-5">
-          <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-[#e9eff8] text-[#3457a6]"><GraduationCap size={17} /></div>
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-[#737983]">Total students</p>
-          <p className="mt-1 text-[34px] font-bold leading-none">{statistics.students}</p>
-        </div>
-        <div className="rounded-lg border border-[#d6d9df] bg-white p-5">
-          <p className="text-[11px] font-bold uppercase tracking-wide">Quick actions</p>
-          <div className="mt-4 flex gap-3">
-            <Link className="flex min-h-[70px] flex-1 flex-col items-center justify-center gap-2 rounded-lg bg-[#f3f4f6] text-center text-[10px] hover:bg-[#e9ebee]" href="/admin/teachers/new">
-              <UserPlus size={20} /> Tambah Guru
-            </Link>
-            <Link className="flex min-h-[70px] flex-1 flex-col items-center justify-center gap-2 rounded-lg bg-[#f3f4f6] text-center text-[10px] hover:bg-[#e9ebee]" href="/admin/students/new">
-              <GraduationCap size={20} /> Tambah<br />Murid
-            </Link>
-            <Link className="flex min-h-[70px] flex-1 flex-col items-center justify-center gap-2 rounded-lg bg-[#f3f4f6] text-center text-[10px] hover:bg-[#e9ebee]" href="/admin/classes/new">
-              <LayoutGrid size={20} /> Buat Kelas
-            </Link>
+
+      <section aria-label="Statistik sekolah" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <article className="rounded-lg border border-[#d4d8df] bg-white p-5">
+          <div className="flex items-start justify-between">
+            <div><p className="text-sm font-medium text-[#706f70]">Total guru</p><p className="mt-3 text-3xl font-bold tracking-tight text-[#353536]">{statistics.teachers}</p></div>
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#ebedf1] text-[#706f70]"><BookOpen size={19} /></span>
           </div>
-        </div>
-      </div>
-      <section className="mt-5 overflow-hidden rounded-lg border border-[#d6d9df] bg-white">
-        <h2 className="border-b border-[#d6d9df] px-5 py-5 text-[18px] font-semibold">Recent Administrative Activities</h2>
-        <div className="grid grid-cols-[1.3fr_1fr_1fr_110px] bg-[#f3f4f6] px-5 py-3 text-[10px] font-semibold text-[#60656e]">
-          <span>Activity</span><span>User</span><span>Timestamp</span><span>Status</span>
-        </div>
-        {loading && <p className="px-5 py-8 text-center text-sm text-slate-500">Memuat aktivitas...</p>}
-        {error && <p className="px-5 py-8 text-center text-sm text-red-600">{error}</p>}
-        {!loading && !error && activities.length === 0 && <p className="px-5 py-8 text-center text-sm text-slate-500">Belum ada aktivitas.</p>}
-        {activities.map((item) => (
-          <div className="grid grid-cols-[1.3fr_1fr_1fr_110px] items-center border-t border-[#e1e3e7] px-5 py-4 text-[12px]" key={item._id}>
-            <span className="flex items-center gap-3">
-              {item.status === "Completed" ? <CheckCircle2 size={16} className="text-[#219653]" /> : <Clock size={16} className="text-[#9b7600]" />}
-              {item.activity}
-            </span>
-            <span>{item.user}</span>
-            <span className="text-[#81858d]">{formatTimestamp(item.createdAt)}</span>
-            <span>
-              <span className={`rounded-full px-3 py-1 text-[10px] ${item.status === "Completed" ? "bg-[#d9f8e8] text-[#219653]" : "bg-[#ffe58d] text-[#9b7600]"}`}>{item.status}</span>
-            </span>
+          <Link className="mt-5 inline-flex items-center gap-1 text-xs font-semibold text-[#706f70] hover:text-[#353536] hover:underline" href="/admin/teachers">Lihat guru <ArrowUpRight size={14} /></Link>
+        </article>
+        <article className="rounded-lg border border-[#d4d8df] bg-white p-5">
+          <div className="flex items-start justify-between">
+            <div><p className="text-sm font-medium text-[#706f70]">Total murid</p><p className="mt-3 text-3xl font-bold tracking-tight text-[#353536]">{statistics.students}</p></div>
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#ebedf1] text-[#706f70]"><GraduationCap size={19} /></span>
           </div>
-        ))}
+          <Link className="mt-5 inline-flex items-center gap-1 text-xs font-semibold text-[#706f70] hover:text-[#353536] hover:underline" href="/admin/students">Lihat murid <ArrowUpRight size={14} /></Link>
+        </article>
+        <article className="rounded-lg border border-[#d4d8df] bg-white p-5">
+          <div className="flex items-start justify-between">
+            <div><p className="text-sm font-medium text-[#706f70]">Total kelas</p><p className="mt-3 text-3xl font-bold tracking-tight text-[#353536]">{statistics.classes}</p></div>
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#ebedf1] text-[#706f70]"><School size={19} /></span>
+          </div>
+          <Link className="mt-5 inline-flex items-center gap-1 text-xs font-semibold text-[#706f70] hover:text-[#353536] hover:underline" href="/admin/classes">Lihat kelas <ArrowUpRight size={14} /></Link>
+        </article>
+      </section>
+
+      <section className="mt-8 border-y border-[#d4d8df] py-6">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div><h2 className="text-base font-bold text-[#353536]">Akses cepat</h2><p className="mt-1 text-xs text-[#706f70]">Tindakan administrasi yang sering digunakan.</p></div>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <Link className="group flex items-center justify-between gap-3 rounded-lg border border-[#d4d8df] bg-white px-4 py-4 transition hover:border-[#acadb1] hover:bg-[#ebedf1]" href="/admin/users/new"><span className="flex items-center gap-3"><span className="flex h-9 w-9 items-center justify-center rounded-md bg-[#ebedf1] text-[#706f70]"><Users size={17} /></span><span className="text-sm font-semibold">Tambah pengguna</span></span><ArrowUpRight className="text-[#acadb1] transition group-hover:text-[#353536]" size={16} /></Link>
+          <Link className="group flex items-center justify-between gap-3 rounded-lg border border-[#d4d8df] bg-white px-4 py-4 transition hover:border-[#acadb1] hover:bg-[#ebedf1]" href="/admin/teachers/new"><span className="flex items-center gap-3"><span className="flex h-9 w-9 items-center justify-center rounded-md bg-[#ebedf1] text-[#706f70]"><BookOpen size={17} /></span><span className="text-sm font-semibold">Tambah guru</span></span><ArrowUpRight className="text-[#acadb1] transition group-hover:text-[#353536]" size={16} /></Link>
+          <Link className="group flex items-center justify-between gap-3 rounded-lg border border-[#d4d8df] bg-white px-4 py-4 transition hover:border-[#acadb1] hover:bg-[#ebedf1]" href="/admin/students/new"><span className="flex items-center gap-3"><span className="flex h-9 w-9 items-center justify-center rounded-md bg-[#ebedf1] text-[#706f70]"><GraduationCap size={17} /></span><span className="text-sm font-semibold">Tambah murid</span></span><ArrowUpRight className="text-[#acadb1] transition group-hover:text-[#353536]" size={16} /></Link>
+          <Link className="group flex items-center justify-between gap-3 rounded-lg border border-[#d4d8df] bg-white px-4 py-4 transition hover:border-[#acadb1] hover:bg-[#ebedf1]" href="/admin/users/import"><span className="flex items-center gap-3"><span className="flex h-9 w-9 items-center justify-center rounded-md bg-[#ebedf1] text-[#706f70]"><Upload size={17} /></span><span className="text-sm font-semibold">Impor akun</span></span><ArrowUpRight className="text-[#acadb1] transition group-hover:text-[#353536]" size={16} /></Link>
+        </div>
+      </section>
+
+      <section className="mt-7 overflow-hidden rounded-lg border border-[#d4d8df] bg-white">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#d4d8df] px-5 py-4 sm:px-6">
+          <div><h2 className="text-base font-bold text-[#353536]">Aktivitas terbaru</h2><p className="mt-1 text-xs text-[#706f70]">Catatan perubahan administrasi sekolah.</p></div>
+          <span className="flex items-center gap-2 text-xs text-[#706f70]"><span className="h-2 w-2 rounded-full bg-[#65a675]" /> Terkini</span>
+        </div>
+        {loading && <p className="px-5 py-10 text-center text-sm text-[#706f70]">Memuat aktivitas...</p>}
+        {error && <p className="px-5 py-10 text-center text-sm text-red-700">{error}</p>}
+        {!loading && !error && activities.length === 0 && <p className="px-5 py-10 text-center text-sm text-[#706f70]">Belum ada aktivitas.</p>}
+        {!loading && !error && activities.length > 0 && (
+          <div className="overflow-x-auto">
+            <div className="min-w-[680px]">
+              <div className="grid grid-cols-[1.5fr_1fr_1fr_110px] bg-[#ebedf1] px-5 py-3 text-[11px] font-semibold text-[#706f70] sm:px-6"><span>Aktivitas</span><span>Pengguna</span><span>Waktu</span><span>Status</span></div>
+              {activities.map((item) => (
+                <div className="grid grid-cols-[1.5fr_1fr_1fr_110px] items-center border-t border-[#edf0ed] px-5 py-4 text-xs text-[#706f70] sm:px-6" key={item._id}>
+                  <span className="flex items-center gap-3">{item.status === "Completed" ? <CheckCircle2 size={16} className="shrink-0 text-[#39865a]" /> : <Clock3 size={16} className="shrink-0 text-[#b07b27]" />}<span>{item.activity}</span></span>
+                  <span>{item.user}</span>
+                  <span className="text-[#706f70]">{formatTimestamp(item.createdAt)}</span>
+                  <span className={`w-fit rounded-full px-2.5 py-1 text-[10px] font-semibold ${item.status === "Completed" ? "bg-[#ebedf1] text-[#28734f]" : "bg-[#ebedf1] text-[#94601b]"}`}>{item.status === "Completed" ? "Selesai" : "Menunggu"}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
     </AdminShell>
   );

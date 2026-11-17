@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import AdminShell from "../../AdminShell";
 
+const majors = ["PPLG", "DKV", "BDR", "MPLB", "PH", "TJKT"];
 const fallbackClassOptions = ["X - PPLG", "XI - PPLG", "XII - PPLG", "X - DKV", "XI - DKV", "XII - DKV", "X - MPLB", "XI - MPLB", "XII - MPLB"];
 
 export default function NewStudentPage() {
@@ -27,22 +29,17 @@ export default function NewStudentPage() {
         const nextOptions = classes
           .map((item: { name?: string }) => item.name)
           .filter((value: unknown): value is string => typeof value === "string" && Boolean(value.trim()));
-
-        if (nextOptions.length > 0) {
-          setClassOptions(nextOptions);
-        }
+        if (nextOptions.length > 0) setClassOptions(nextOptions);
       } catch {
-        // fallback to static options if the API is unavailable
+        return;
       }
     }
-
     fetchClasses();
   }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
-
     try {
       const response = await fetch("/api/students", {
         method: "POST",
@@ -50,12 +47,10 @@ export default function NewStudentPage() {
         body: JSON.stringify({ nis, name, className, major }),
       });
       const data = await response.json();
-
       if (!response.ok) {
         setError(data.message ?? "Gagal menyimpan murid");
         return;
       }
-
       setShowNotification(true);
       setTimeout(() => router.push("/admin/students"), 1500);
     } catch {
@@ -63,8 +58,23 @@ export default function NewStudentPage() {
     }
   }
 
-  return <AdminShell active="students">
-    {showNotification && <div className="fixed right-6 top-5 z-50 flex w-[296px] items-start gap-3 rounded-xl border border-[#b8f0c7] bg-white px-4 py-4 shadow-[0_5px_16px_rgba(24,120,54,0.22)]" role="status"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#baffc7] text-sm font-bold text-[#0dce35]">✓</span><div className="min-w-0 flex-1 leading-tight"><p className="text-[14px] font-bold text-[#06a928]">Berhasil Nihh!</p><p className="mt-1 text-[12px] text-[#4d5157]">Penambahan Murid Berhasil</p></div><button className="text-xl leading-none text-[#4b4b4b]" type="button" aria-label="Tutup notifikasi" onClick={() => setShowNotification(false)}>×</button></div>}
-    <div className="mx-auto max-w-[575px] rounded-lg border border-[#d6d9df] bg-white"><h1 className="flex items-center gap-3 border-b border-[#d6d9df] px-6 py-5 text-[18px] font-semibold"><span className="rounded-lg bg-[#e9eff8] p-2">♙+</span>Tambah Murid Baru</h1><form className="grid grid-cols-2 gap-5 p-6" onSubmit={handleSubmit}><label className="block text-[10px]">NISN<input className="mt-2 h-9 w-full rounded border border-[#cbd0d7] bg-[#f7f8fa] px-3 text-[12px]" value={nis} onChange={(event) => setNis(event.target.value)} required /></label><label className="block text-[10px]">KELAS<select className="mt-2 h-9 w-full rounded border border-[#cbd0d7] bg-[#f7f8fa] px-3 text-[12px]" value={className} onChange={(event) => setClassName(event.target.value)} required><option value="">Pilih kelas</option>{classOptions.map((option) => <option key={option} value={option}>{option}</option>)}</select></label><label className="block text-[10px]">JURUSAN<select className="mt-2 h-9 w-full rounded border border-[#cbd0d7] bg-[#f7f8fa] px-3 text-[12px]" value={major} onChange={(event) => setMajor(event.target.value)} required><option value="">Pilih jurusan</option><option value="PPLG">PPLG</option><option value="DKV">DKV</option><option value="BDR">BDR</option><option value="MPLB">MPLB</option><option value="PH">PH</option><option value="TJKT">TJKT</option></select></label><label className="col-span-2 block text-[10px]">NAMA LENGKAP<input className="mt-2 h-9 w-full rounded border border-[#cbd0d7] bg-[#f7f8fa] px-3 text-[12px]" placeholder="Enter student's full name" value={name} onChange={(event) => setName(event.target.value)} required /></label>{error && <p className="col-span-2 rounded bg-red-50 px-3 py-2 text-[11px] text-red-700">{error}</p>}<div className="col-span-2 flex justify-end gap-3 border-t border-[#d6d9df] pt-5"><Link className="rounded border border-[#c94e4e] px-5 py-2 text-[11px] font-semibold text-[#c94e4e]" href="/admin/students">Cancel</Link><button className="rounded bg-[#168446] px-5 py-2 text-[11px] font-semibold text-white" type="submit">▣ Save Student</button></div></form></div>
-  </AdminShell>;
+  return (
+    <AdminShell active="students">
+      {showNotification && <div className="fixed right-5 top-5 z-50 rounded-lg border border-[#c8dfcb] bg-white px-4 py-3 text-sm font-semibold text-[#28734f] shadow-lg" role="status">Data murid berhasil ditambahkan</div>}
+      <div className="mx-auto max-w-3xl">
+        <Link className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-[#706f70] transition hover:text-[#353536]" href="/admin/students"><ArrowLeft size={16} /> Kembali ke murid</Link>
+        <div className="mb-6"><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#706f70]">Direktori akademik</p><h1 className="mt-2 text-3xl font-bold tracking-tight text-[#353536]">Tambah murid</h1><p className="mt-2 text-sm text-[#706f70]">Masukkan identitas dan penempatan kelas murid.</p></div>
+        <form className="rounded-lg border border-[#d4d8df] bg-white p-6 shadow-sm sm:p-8" onSubmit={handleSubmit}>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <label className="block text-xs font-semibold text-[#706f70]">NIS<input className="mt-2 h-11 w-full rounded-lg border border-[#d4d8df] bg-[#ebedf1] px-3 text-sm text-[#353536] outline-none transition focus:border-[#353536] focus:ring-4 focus:ring-[#d4d8df]" value={nis} onChange={(event) => setNis(event.target.value)} required /></label>
+            <label className="block text-xs font-semibold text-[#706f70]">Nama lengkap<input className="mt-2 h-11 w-full rounded-lg border border-[#d4d8df] bg-[#ebedf1] px-3 text-sm text-[#353536] outline-none transition focus:border-[#353536] focus:ring-4 focus:ring-[#d4d8df]" value={name} onChange={(event) => setName(event.target.value)} placeholder="Nama lengkap murid" required /></label>
+            <label className="block text-xs font-semibold text-[#706f70]">Kelas<select className="mt-2 h-11 w-full rounded-lg border border-[#d4d8df] bg-[#ebedf1] px-3 text-sm text-[#353536] outline-none transition focus:border-[#353536] focus:ring-4 focus:ring-[#d4d8df]" value={className} onChange={(event) => setClassName(event.target.value)} required><option value="">Pilih kelas</option>{classOptions.map((option) => <option key={option} value={option}>{option}</option>)}</select></label>
+            <label className="block text-xs font-semibold text-[#706f70]">Jurusan<select className="mt-2 h-11 w-full rounded-lg border border-[#d4d8df] bg-[#ebedf1] px-3 text-sm text-[#353536] outline-none transition focus:border-[#353536] focus:ring-4 focus:ring-[#d4d8df]" value={major} onChange={(event) => setMajor(event.target.value)} required><option value="">Pilih jurusan</option>{majors.map((option) => <option key={option} value={option}>{option}</option>)}</select></label>
+          </div>
+          {error && <p className="mt-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
+          <div className="mt-7 flex justify-end gap-3 border-t border-[#d4d8df] pt-5"><Link className="rounded-lg border border-[#d4d8df] px-5 py-2.5 text-sm font-semibold text-[#706f70] transition hover:bg-[#ebedf1]" href="/admin/students">Batal</Link><button className="rounded-lg bg-[#168446] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#106d38]" type="submit">Simpan murid</button></div>
+        </form>
+      </div>
+    </AdminShell>
+  );
 }
