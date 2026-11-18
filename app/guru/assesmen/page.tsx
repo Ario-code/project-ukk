@@ -34,11 +34,10 @@ type AssessmentType = "Kuis" | "Ujian" | "Penilaian" | "Tugas" | "Materi";
 type SecondaryCardType = AssessmentType;
 
 const courseOptions = ["Matematika", "Bahasa Indonesia", "IPA", "IPS", "Informatika", "Bahasa Inggris"];
-const classOptions = ["XII RPL", "XI TKJ", "X PPLG", "XII TKJ", "XI RPL"];
-
 export default function GuruAssesmenPage() {
   const [assessments, setAssessments] = useState<AssessmentItem[]>([]);
   const [materials, setMaterials] = useState<MaterialItem[]>([]);
+  const [classOptions, setClassOptions] = useState<string[]>([]);
   const [selectedType, setSelectedType] = useState<AssessmentType | null>(null);
   const [uploadMode, setUploadMode] = useState<"link" | "file">("link");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -50,16 +49,17 @@ export default function GuruAssesmenPage() {
   async function loadData() {
     try {
       setLoading(true);
-      const [assessmentRes, materialRes] = await Promise.all([
+      const [assessmentRes, materialRes, classRes] = await Promise.all([
         fetch("/api/assessments"),
         fetch("/api/materials"),
+        fetch("/api/classes"),
       ]);
 
-      const assessmentData = await assessmentRes.json();
-      const materialData = await materialRes.json();
+      const [assessmentData, materialData, classData] = await Promise.all([assessmentRes.json(), materialRes.json(), classRes.json()]);
 
       if (assessmentData.success) setAssessments(assessmentData.assessments ?? []);
       if (materialData.success) setMaterials(materialData.materials ?? []);
+      if (classData.success) setClassOptions((classData.classes ?? []).map((item: { name: string }) => item.name));
     } catch {
       setAssessments([]);
       setMaterials([]);

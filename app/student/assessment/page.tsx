@@ -2,6 +2,8 @@ import { BookOpenText, ClipboardCheck, FileText, NotebookPen, Trophy, type Lucid
 import StudentShell from "../StudentShell";
 import { connectDB } from "@/lib/mongodb";
 import Assessment from "@/models/assessment";
+import Student from "@/models/student";
+import { getCurrentUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +16,9 @@ const icons: Record<string, LucideIcon> = {
 
 export default async function StudentAssessmentPage() {
   await connectDB();
-  const assessments = await Assessment.find().sort({ deadline: 1 }).lean();
+  const user = await getCurrentUser();
+  const student = user ? await Student.findOne({ $or: [{ userId: user.id }, { name: user.name }] }).select("className").lean() : null;
+  const assessments = await Assessment.find(student ? { $or: [{ kelas: student.className }, { kelas: "General" }] } : { kelas: "General" }).sort({ deadline: 1 }).lean();
 
   return (
     <StudentShell active="assessment">

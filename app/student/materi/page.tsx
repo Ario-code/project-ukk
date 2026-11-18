@@ -3,12 +3,16 @@ import { ArrowDownToLine, FileText, Search } from "lucide-react";
 import StudentShell from "../StudentShell";
 import { connectDB } from "@/lib/mongodb";
 import Material from "@/models/material";
+import Student from "@/models/student";
+import { getCurrentUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export default async function StudentMaterialPage() {
   await connectDB();
-  const materials = await Material.find().sort({ createdAt: -1 }).lean();
+  const user = await getCurrentUser();
+  const student = user ? await Student.findOne({ $or: [{ userId: user.id }, { name: user.name }] }).select("className").lean() : null;
+  const materials = await Material.find(student ? { $or: [{ kelas: student.className }, { kelas: "General" }] } : { kelas: "General" }).sort({ createdAt: -1 }).lean();
 
   const cards = materials.slice(0, 3);
   const history = materials.slice(3);
