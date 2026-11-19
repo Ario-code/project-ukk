@@ -24,8 +24,18 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next();
     }
 
+    if (pathname.startsWith("/kepsek")) {
+      if (role !== "kepsek") {
+        return NextResponse.redirect(
+          new URL(role === "admin" ? "/admin" : role === "guru" ? "/guru" : "/student", request.url)
+        );
+      }
+      return NextResponse.next();
+    }
+
     if (pathname.startsWith("/student")) {
       const allowedStudentRoles = ["murid", "guru", "kepsek", "wakakurikulum"];
+      if (role === "kepsek") return NextResponse.redirect(new URL("/kepsek", request.url));
       if (!allowedStudentRoles.includes(role)) {
         return NextResponse.redirect(
           new URL(role === "admin" ? "/admin" : role === "guru" ? "/guru" : "/login", request.url)

@@ -4,6 +4,7 @@ import { connectDB } from "@/lib/mongodb";
 import Assessment from "@/models/assessment";
 import Student from "@/models/student";
 import { getCurrentUser } from "@/lib/auth";
+import { normalizeClassName } from "@/lib/class-matching";
 
 export const dynamic = "force-dynamic";
 
@@ -17,8 +18,17 @@ const icons: Record<string, LucideIcon> = {
 export default async function StudentAssessmentPage() {
   await connectDB();
   const user = await getCurrentUser();
-  const student = user ? await Student.findOne({ $or: [{ userId: user.id }, { name: user.name }] }).select("className").lean() : null;
-  const assessments = await Assessment.find(student ? { $or: [{ kelas: student.className }, { kelas: "General" }] } : { kelas: "General" }).sort({ deadline: 1 }).lean();
+  const student = user
+    ? await Student.findOne({ userId: user.id }).select("className").lean()
+      ?? await Student.findOne({ name: user.name }).select("className").lean()
+    : null;
+  const [allAssessments, generalAssessments] = await Promise.all([
+    student ? Assessment.find().sort({ deadline: 1 }).lean() : Promise.resolve([]),
+    Assessment.find({ kelas: "General" }).sort({ deadline: 1 }).lean(),
+  ]);
+  const assessments = student
+    ? allAssessments.filter((item) => normalizeClassName(item.kelas) === normalizeClassName(student.className) || item.kelas === "General")
+    : generalAssessments;
 
   return (
     <StudentShell active="assessment">

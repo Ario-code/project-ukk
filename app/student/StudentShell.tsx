@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import {
-  Bell,
   BookOpenText,
   ClipboardCheck,
   FileUp,
@@ -55,28 +54,24 @@ export default function StudentShell({ active, children }: StudentShellProps) {
   }
 
   return (
-    <main className="min-h-screen bg-[#f3f4f7] text-[#1e2430]">
-      <div className="flex min-h-screen">
-        <aside className="flex w-[230px] shrink-0 flex-col bg-[#101a4a] text-white">
-          <div className="px-[18px] pb-7 pt-7">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-[#f3f5d9] text-[13px] font-bold text-[#1f2d4d]">SM</div>
-              <div>
-                <p className="text-[17px] font-bold tracking-tight">SMK Link</p>
-                <p className="text-[10px] text-[#b6bdd7]">Vocational Management</p>
-              </div>
-            </div>
+    <main className="min-h-screen bg-[#ebedf1] text-[#353536]">
+      <div className="flex min-h-screen flex-col lg:flex-row">
+        <aside className="flex w-full shrink-0 flex-col border-b border-[#d4d8df] bg-white lg:min-h-screen lg:w-[250px] lg:border-b-0 lg:border-r">
+          <div className="flex items-center gap-3 px-5 py-4 lg:px-6 lg:py-7">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#ebedf1] text-[#353536]"><UserCircle2 size={21} /></span>
+            <div><p className="truncate text-sm font-bold tracking-tight">Kelasin</p><p className="mt-1 text-[11px] text-[#706f70]">portal murid</p></div>
           </div>
 
-          <nav className="space-y-1 px-2 pb-4 text-[13px] font-medium">
+          <nav aria-label="Navigasi murid" className="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-col lg:overflow-visible">
             {navigation.map(({ key, icon: Icon, label, href }) => (
               <Link
+                aria-current={active === key ? "page" : undefined}
                 key={key}
                 href={href}
-                className={`flex items-center gap-3 rounded-md px-3 py-3 transition ${
+                className={`flex min-w-max items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
                   active === key
-                    ? "bg-[#2a2f60] text-white shadow-inner"
-                    : "text-[#d0d7ef] hover:bg-[#1a234f]"
+                    ? "bg-[#ebedf1] text-[#353536]"
+                    : "text-[#706f70] hover:bg-[#ebedf1] hover:text-[#353536]"
                 }`}
               >
                 <Icon size={17} strokeWidth={2} />
@@ -85,28 +80,21 @@ export default function StudentShell({ active, children }: StudentShellProps) {
             ))}
           </nav>
 
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="mt-auto flex items-center gap-2 px-[18px] pb-8 text-left text-[12px] font-semibold text-[#f7b4b4] hover:text-red-300"
-          >
-            <LogOut size={16} /> LogOut
-          </button>
+          <div className="mt-auto hidden px-6 pb-6 pt-10 text-[11px] text-[#acadb1] lg:block">Portal Manajemen Sekolah</div>
         </aside>
 
         <div className="min-w-0 flex-1">
-          <header className="flex h-[72px] items-center justify-end gap-4 border-b border-[#dfe3ea] bg-white/70 px-6 backdrop-blur-sm">
-            <button type="button" aria-label="Notifications" className="text-[#3c4658]"><Bell size={20} /></button>
+          <header className="flex min-h-16 items-center justify-between border-b border-[#d4d8df] bg-white px-4 sm:px-7">
+            <div><p className="text-[11px] font-medium text-[#706f70]">Akademik Sekolah / Murid</p><p className="mt-1 text-sm font-semibold text-[#353536]">{navigation.find((item) => item.key === active)?.label}</p></div>
             <div className="flex items-center gap-3">
-              <div className="text-right leading-tight">
-                <p className="text-[13px] font-semibold text-[#1f2430]">{user?.name ?? "..."}</p>
-                <p className="text-[10px] uppercase text-[#7c8290]">{user?.role ?? ""}</p>
-              </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#dfeaf6] text-[11px] font-bold text-[#44576f]">{initials}</div>
+              <div className="hidden text-right leading-tight sm:block"><p className="text-xs font-semibold">{user?.name ?? "..."}</p><p className="mt-1 text-[10px] text-[#706f70]">Murid</p></div>
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#ebedf1] text-xs font-bold text-[#353536]">{initials}</div>
+              <span className="h-7 border-l border-[#d4d8df]" />
+              <button type="button" onClick={handleLogout} aria-label="Keluar" title="Keluar" className="flex h-9 w-9 items-center justify-center rounded-lg text-[#706f70] hover:bg-[#ebedf1] hover:text-[#080808]"><LogOut size={17} /></button>
             </div>
           </header>
 
-          <div className="px-7 py-8 lg:px-[32px]">{children}</div>
+          <div className="px-4 py-6 sm:px-7 sm:py-8 lg:px-9">{children}</div>
         </div>
       </div>
     </main>

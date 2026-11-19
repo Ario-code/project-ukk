@@ -2,6 +2,7 @@ import StudentShell from "./StudentShell";
 import { connectDB } from "@/lib/mongodb";
 import Material from "@/models/material";
 import Assessment from "@/models/assessment";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -16,23 +17,23 @@ export default async function StudentDashboardPage() {
   ]);
 
   const cards = [
-    { label: "Materi", count: materiCount, badge: "Materi Baru", link: "Ke Materi →", tone: "bg-[#dff3e6]" },
-    { label: "Tugas", count: tugasCount, badge: "Tugas Belum Selesai", link: "Ke Tugas →", tone: "bg-[#f7dfe1]" },
-    { label: "Kuis", count: kuisCount, badge: "Ujian Mendatang", link: "Ke Ujian →", tone: "bg-[#f3f0b8]" },
+    { label: "Materi", count: materiCount, badge: "Materi Baru", href: "/student/materi" },
+    { label: "Tugas", count: tugasCount, badge: "Tugas Belum Selesai", href: "/student/assessment" },
+    { label: "Kuis", count: kuisCount, badge: "Ujian Mendatang", href: "/student/assessment" },
   ] as const;
 
   return (
     <StudentShell active="dashboard">
-      <h1 className="mb-8 text-[52px] font-bold tracking-[-1.5px] text-[#1e2430]">Selamat Datang, Murid!</h1>
+      <h1 className="mb-8 text-3xl font-bold tracking-tight text-[#353536]">Selamat Datang, Murid!</h1>
 
       <div className="grid gap-6 md:grid-cols-3">
         {cards.map((card) => (
-          <div key={card.label} className="rounded-2xl border border-[#dfe2e7] bg-white p-5 shadow-[0_1px_0_rgba(15,23,42,0.02)]">
-            <div className="mb-4 text-[22px] font-semibold text-[#1d2430]">{card.label}</div>
-            <div className="mb-5 text-[46px] font-bold leading-none tracking-[-1.5px] text-[#1d2430]">{card.count}</div>
-            <div className={`inline-flex rounded-full px-3 py-1 text-[11px] font-semibold ${card.tone} text-[#3d4d59]`}>{card.badge}</div>
-            <div className="mt-5 border-t border-[#e8ebf1] pt-4 text-[14px] font-medium text-[#2d78d5]">{card.link}</div>
-          </div>
+          <Link href={card.href} key={card.label} className="rounded-lg border border-[#d4d8df] bg-white p-5 transition hover:border-[#acadb1]">
+            <div className="mb-4 text-lg font-semibold text-[#353536]">{card.label}</div>
+            <div className="mb-5 text-4xl font-bold leading-none text-[#353536]">{card.count}</div>
+            <div className="inline-flex rounded-full bg-[#ebedf1] px-3 py-1 text-xs font-semibold text-[#706f70]">{card.badge}</div>
+            <div className="mt-5 border-t border-[#d4d8df] pt-4 text-sm font-semibold text-[#168446]">Lihat detail →</div>
+          </Link>
         ))}
       </div>
     </StudentShell>
