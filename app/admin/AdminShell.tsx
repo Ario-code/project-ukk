@@ -32,30 +32,31 @@ export default function AdminShell({ active, children }: AdminShellProps) {
   return (
     <main className="min-h-screen bg-[#ebedf1] text-[#353536]">
       <div className="flex min-h-screen flex-col lg:flex-row">
-        <aside className="flex w-full shrink-0 flex-col border-b border-[#d4d8df] bg-white text-[#353536] lg:min-h-screen lg:w-[250px] lg:border-b-0 lg:border-r">
-          <div className="flex items-center gap-3 px-5 py-4 lg:px-6 lg:py-7">
+        <aside className="group flex w-full shrink-0 flex-col border-b border-[#d4d8df] bg-white text-[#353536] transition-[width] duration-200 lg:sticky lg:top-0 lg:min-h-screen lg:w-[72px] lg:border-b-0 lg:border-r lg:hover:w-[250px]">
+          <div className="flex items-center justify-center gap-3 overflow-hidden px-5 py-4 lg:px-4 lg:py-7 lg:group-hover:justify-start">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#ebedf1] text-[#353536]"><School size={21} strokeWidth={2.2} /></span>
-            <div className="min-w-0">
+            <div className="min-w-0 overflow-hidden whitespace-nowrap opacity-100 transition-opacity lg:max-w-0 lg:opacity-0 lg:group-hover:max-w-[180px] lg:group-hover:opacity-100">
               <p className="truncate text-sm font-bold tracking-tight">Kelasin</p>
               <p className="mt-1 text-[11px] text-[#706f70]">administrasi</p>
             </div>
           </div>
-          <nav aria-label="Navigasi admin" className="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-col lg:overflow-visible lg:px-3 lg:pb-0">
+          <nav aria-label="Navigasi admin" className="flex gap-1 overflow-x-auto px-3 pb-3 lg:w-full lg:flex-col lg:overflow-visible lg:px-3 lg:pb-0">
             {navigation.map(({ key, icon: Icon, label, href }) => (
               <Link
                 aria-current={active === key ? "page" : undefined}
-                className={`flex min-w-max items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                title={label}
+                className={`flex min-w-max items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors lg:min-w-0 lg:w-full lg:justify-center lg:group-hover:justify-start ${
                   active === key ? "bg-[#ebedf1] text-[#353536]" : "text-[#706f70] hover:bg-[#ebedf1] hover:text-[#353536]"
                 }`}
                 href={href}
                 key={key}
               >
                 <Icon size={17} strokeWidth={2} />
-                {label}
+                <span className="overflow-hidden whitespace-nowrap opacity-100 transition-opacity lg:max-w-0 lg:opacity-0 lg:group-hover:max-w-[180px] lg:group-hover:opacity-100">{label}</span>
               </Link>
             ))}
           </nav>
-          <div className="mt-auto hidden px-6 pb-6 pt-10 text-[11px] text-[#acadb1] lg:block">Portal Manajemen Sekolah</div>
+          <div className="mt-auto hidden overflow-hidden whitespace-nowrap px-6 pb-6 pt-10 text-[11px] text-[#acadb1] opacity-0 transition-opacity lg:block lg:group-hover:opacity-100">Portal Manajemen Sekolah</div>
         </aside>
 
         <div className="min-w-0 flex-1">

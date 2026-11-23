@@ -44,7 +44,7 @@ export default function LoginPage() {
         return;
       }
 
-      const destination = data.user.role === "admin" ? "/admin" : data.user.role === "guru" ? "/guru" : data.user.role === "kepsek" ? "/kepsek" : "/student";
+      const destination = data.user.role === "admin" ? "/admin" : data.user.role === "guru" ? "/guru" : data.user.role === "kepsek" ? "/kepsek" : data.user.role === "wakakurikulum" ? "/kurikulum" : "/student";
       router.push(destination);
       router.refresh();
     } catch {
